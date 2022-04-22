@@ -2,22 +2,22 @@ import Head from "next/head"
 import { useState, useEffect } from "react"
 import Seo from "../components/Seo"
 
-const API_KEY = process.env.API_KEYs
+const API_KEY = process.env.API_KEY
 
-export default function Home() {
-    const [movies, setMovies] = useState()
-    useEffect(() => {
-        (async () => {
-            const { results } = await (await fetch(`/api/movies`)).json()
-            setMovies(results)
-        })()
-    }, [])
+export default function Home({ results }) {
+    // const [movies, setMovies] = useState()
+    // useEffect(() => {
+    //     (async () => {
+    //         const { results } = await (await fetch(`/api/movies`)).json()
+    //         setMovies(results)
+    //     })()
+    // }, [])
     return (
         <div className="container">
             <Seo title="Home " />
             <Head><title>Home | Next Movies</title></Head>
-            {!movies && <h4>Loading...</h4>}
-            {movies?.map(m => (
+            {!results && <h4>Loading...</h4>}
+            {results?.map(m => (
                 <div className="movie" key={m.id}>
                     <img src={`https://image.tmdb.org/t/p/w500${m.poster_path}`} />
                     <h4>{m.original_title}</h4>
@@ -46,4 +46,22 @@ export default function Home() {
             </style>
         </div>
     )
+}
+
+export async function getServerSideProps() {
+    console.log('test')
+    const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'User-Agent': '*',
+        }
+    })
+    const { results } = await res.json()
+    return {
+        props: {
+            results
+        }
+    }
 }
