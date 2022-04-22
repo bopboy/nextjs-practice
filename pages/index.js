@@ -2,25 +2,48 @@ import Head from "next/head"
 import { useState, useEffect } from "react"
 import Seo from "../components/Seo"
 
-const API_KEY = "d23b6e209156de66ef98203b83473aac"
+const API_KEY = process.env.API_KEYs
 
 export default function Home() {
     const [movies, setMovies] = useState()
     useEffect(() => {
         (async () => {
-            const { results } = await (await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`)).json()
+            const { results } = await (await fetch(`/api/movies`)).json()
             setMovies(results)
         })()
     }, [])
     return (
-        <div>
+        <div className="container">
             <Seo title="Home " />
             <Head><title>Home | Next Movies</title></Head>
-            <h1 className="active">Movies</h1>
             {!movies && <h4>Loading...</h4>}
             {movies?.map(m => (
-                <div key={m.id}><h4>{m.original_title}</h4></div>
+                <div className="movie" key={m.id}>
+                    <img src={`https://image.tmdb.org/t/p/w500${m.poster_path}`} />
+                    <h4>{m.original_title}</h4>
+                </div>
             ))}
+            <style jsx>{`
+                .container {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    padding: 20px;
+                    gap: 20px;
+                }             
+                .movie img {
+                    max-width: 100%;
+                    border-radius: 12px;
+                    transition: transform 0.2s ease-in-out;
+                }
+                .movie:hover img {
+                    transform: scale(1.05) translateY(-10px);
+                }
+                .movie h4 {
+                    font-size: 18px;
+                    text-align: center;
+                }
+            `}
+            </style>
         </div>
     )
 }
