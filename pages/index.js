@@ -9,12 +9,7 @@ const API_KEY = process.env.API_KEY
 export default function Home({ results }) {
     const router = useRouter()
     const onClick = (id, title) => {
-        router.push({
-            pathname: `/movies/${id}`,
-            query: {
-                title
-            },
-        }, `/movies/${id}`)
+        router.push(`/movies/${title}/${id}`)
     }
     return (
         <div className="container">
@@ -25,11 +20,7 @@ export default function Home({ results }) {
                 <div className="movie" key={m.id} onClick={() => onClick(m.id, m.original_title)}>
                     <img src={`https://image.tmdb.org/t/p/w500${m.poster_path}`} />
                     <h4>
-                        <Link href={{
-                            pathname: `/movies/${m.id}`,
-                            query: { title: m.original_title }
-                        }}
-                            as={`/movies/${m.id}`}>
+                        <Link href={`/movies/${m.original_title}/${m.id}`}>
                             <a>{m.original_title}</a>
                         </Link>
                     </h4>
