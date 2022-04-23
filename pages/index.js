@@ -29,7 +29,10 @@ export default function Home({ results }) {
                     grid-template-columns: 1fr 1fr;
                     padding: 20px;
                     gap: 20px;
-                }             
+                }
+                .movie {
+                    cursor: pointer;
+                }
                 .movie img {
                     max-width: 100%;
                     border-radius: 12px;
@@ -49,7 +52,6 @@ export default function Home({ results }) {
 }
 
 export async function getServerSideProps() {
-    console.log('test')
     const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`, {
         method: "GET",
         headers: {
